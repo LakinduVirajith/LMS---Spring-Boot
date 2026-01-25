@@ -1,8 +1,9 @@
 package com.vpcodelabs.lms.controllers;
 
-import java.util.List;
-
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,34 +25,39 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/subjects")
 @RequiredArgsConstructor
 @Validated
-public class SubjectController {
-    private final SubjectService subjectService;
+public class SubjectController extends AbstractController {
     private final ModelMapper modelMapper;
+    private final SubjectService subjectService;
+
+    @PostMapping
+    public ResponseEntity<Subject> createSubject(@Valid @RequestBody SubjectDTO subjectDTO) {
+        Subject subject = modelMapper.map(subjectDTO, Subject.class);
+        Subject createdSubject =  subjectService.addNewSubject(subjectDTO.getMentorId(), subject);
+        return sendCreatedResponse(createdSubject);
+    }
 
     @GetMapping
-    public List<Subject> getAllSubjects() {
-        return subjectService.getAllSubjects();
+    public ResponseEntity<Page<Subject>> getAllSubjects(Pageable pageable) {
+        Page<Subject> subjects = subjectService.getAllSubjects(pageable);
+        return sendOkResponse(subjects);
     }
 
     @GetMapping("{id}")
-    public Subject getSubjectById(@PathVariable Long id) {
-        return subjectService.getSubjectById(id);
-    }
-
-    @PostMapping
-    public Subject createSubject(@Valid @RequestBody SubjectDTO subjectDTO) {
-        Subject subject = modelMapper.map(subjectDTO, Subject.class);
-        return subjectService.addNewSubject(subjectDTO.getMentorId(), subject);
+    public ResponseEntity<Subject> getSubjectById(@PathVariable Long id) {
+        Subject subject = subjectService.getSubjectById(id);
+        return sendOkResponse(subject);
     }
 
     @PutMapping("{id}")
-    public Subject updateSubject(@PathVariable Long id, @RequestBody SubjectDTO updatedSubjectDTO) {
+    public ResponseEntity<Subject> updateSubject(@PathVariable Long id, @Valid @RequestBody SubjectDTO updatedSubjectDTO) {
         Subject subject = modelMapper.map(updatedSubjectDTO, Subject.class);
-        return subjectService.updateSubjectById(id, subject);
+        Subject updatedSubject = subjectService.updateSubjectById(id, subject);
+        return sendOkResponse(updatedSubject);
     }
 
     @DeleteMapping("{id}")
-    public void deleteSubject(@PathVariable Long id) {
+    public ResponseEntity<Subject> deleteSubject(@PathVariable Long id) {
         subjectService.deleteSubject(id);
+        return sendNoContentResponse();
     }
 }
