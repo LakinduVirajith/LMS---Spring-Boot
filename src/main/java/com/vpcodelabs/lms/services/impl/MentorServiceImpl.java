@@ -27,7 +27,7 @@ public class MentorServiceImpl implements MentorService {
             return mentorRepository.save(mentor);
         } catch (Exception exception) {
             // What, When, Where, Why
-            log.error("Failed to create new mentor", exception);
+            log.error("Error creating mentor", exception);
             throw new CustomException("Failed to create new mentor", HttpStatus.CONFLICT);
         }
     }
@@ -40,7 +40,6 @@ public class MentorServiceImpl implements MentorService {
             log.error("Failed to get all mentors", exception);
             throw new CustomException("Failed to get all mentors", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
 
     public Mentor getMentorById(Long id) {
