@@ -1,6 +1,7 @@
 package com.vpcodelabs.lms.entities;
 
 import java.util.Date;
+import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -15,13 +16,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "subjects")
+@Table(name = "subject")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -48,4 +50,7 @@ public class Subject {
     @JoinColumn(name = "mentor_id", nullable = false)
     @JsonIgnore
     private Mentor mentor;
+
+    @OneToMany(mappedBy = "subject")
+    private List<Session> sessions;
 }
