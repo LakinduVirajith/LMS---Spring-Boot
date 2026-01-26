@@ -18,7 +18,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "mentors")
+@Table(name = "mentor")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -64,5 +64,8 @@ public class Mentor {
 
     @OneToMany(mappedBy = "mentor")
     private List<Subject> subjects;
+
+    @OneToMany(mappedBy = "mentor")
+    private List<Session> sessions;
 }
 
