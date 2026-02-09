@@ -1,13 +1,15 @@
 package com.vpcodelabs.lms.services.impl;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.vpcodelabs.lms.entities.Mentor;
-import com.vpcodelabs.lms.exception.CustomException;
+import com.vpcodelabs.lms.exceptions.CustomException;
 import com.vpcodelabs.lms.repositories.MentorRepository;
 import com.vpcodelabs.lms.services.MentorService;
 
@@ -22,6 +24,7 @@ public class MentorServiceImpl implements MentorService {
     private final MentorRepository mentorRepository;
     private final ModelMapper modelMapper;
 
+    @CacheEvict(value = "mentors", allEntries = true)
     public Mentor createNewMentor(Mentor mentor) {
         try {
             return mentorRepository.save(mentor);
@@ -32,6 +35,7 @@ public class MentorServiceImpl implements MentorService {
         }
     }
 
+    @Cacheable(value = "mentors", key = "#pageable.pageNumber + '_' + #pageable.pageSize")
     public Page<Mentor> getAllMentors(Pageable pageable) {
         try {
             log.debug("getting mentors");
@@ -42,6 +46,7 @@ public class MentorServiceImpl implements MentorService {
         }
     }
 
+    @Cacheable(value = "mentors", key = "#id")
     public Mentor getMentorById(Long id) {
         try {
             Mentor mentor = mentorRepository.findById(id).orElseThrow(
@@ -58,6 +63,7 @@ public class MentorServiceImpl implements MentorService {
         }
     }
 
+    @CacheEvict(value = "mentors", allEntries = true)
     public Mentor updateMentorById(Long id, Mentor updatedMentor) {
         try {
             Mentor mentor = mentorRepository.findById(id).orElseThrow(

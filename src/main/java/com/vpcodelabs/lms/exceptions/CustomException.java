@@ -1,4 +1,4 @@
-package com.vpcodelabs.lms.exception;
+package com.vpcodelabs.lms.exceptions;
 
 import org.springframework.http.HttpStatus;
 

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.vpcodelabs.lms.entities.Mentor;
 import com.vpcodelabs.lms.entities.Subject;
-import com.vpcodelabs.lms.exception.CustomException;
+import com.vpcodelabs.lms.exceptions.CustomException;
 import com.vpcodelabs.lms.repositories.MentorRepository;
 import com.vpcodelabs.lms.repositories.SubjectRepository;
 import com.vpcodelabs.lms.services.SubjectService;

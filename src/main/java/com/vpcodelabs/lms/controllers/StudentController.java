@@ -4,6 +4,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,8 +16,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.vpcodelabs.lms.constants.UserRoles.*;
 import com.vpcodelabs.lms.dtos.StudentDTO;
 import com.vpcodelabs.lms.entities.Student;
+import com.vpcodelabs.lms.security.UserPrincipal;
 import com.vpcodelabs.lms.services.StudentService;
 
 import jakarta.validation.Valid;
@@ -25,15 +29,24 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping(path = "/api/v1/students")
 @RequiredArgsConstructor
 @Validated
+@PreAuthorize("isAuthenticated()")
 public class StudentController extends AbstractController{
     private final StudentService studentService;
     private final ModelMapper modelMapper;
 
     @PostMapping
-    public ResponseEntity<Student> createStudent(@Valid @RequestBody StudentDTO studentDTO) {
-        Student student = modelMapper.map(studentDTO, Student.class);
-        Student createdStudent = studentService.createNewStudent(student);
+    @PreAuthorize("hasAnyRole('" + ROLE_ADMIN + "', '" + ROLE_STUDENT + "')")
+    public ResponseEntity<Student> createStudent(@Valid @RequestBody StudentDTO studentDTO, Authentication authentication) {
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
+        Student student = modelMapper.map(studentDTO, Student.class);
+        student.setStudentId(userPrincipal.getId());
+        student.setFirstName(userPrincipal.getFirstName());
+        student.setLastName(userPrincipal.getLastName());
+        student.setEmail(userPrincipal.getEmail());
+
+        Student createdStudent = studentService.createNewStudent(student);
+        
         return sendCreatedResponse(createdStudent);
     }
 
@@ -50,6 +63,7 @@ public class StudentController extends AbstractController{
     }
 
     @PutMapping("{id}")
+    @PreAuthorize("hasAnyRole('" + ROLE_ADMIN + "', '" + ROLE_STUDENT + "')")
     public ResponseEntity<Student> updateStudent(@PathVariable Long id, @Valid @RequestBody StudentDTO updatedStudentDTO) {
         Student student = modelMapper.map(updatedStudentDTO, Student.class);
         Student updatedStudent = studentService.updateStudentById(id, student);
@@ -57,6 +71,7 @@ public class StudentController extends AbstractController{
     }
 
     @DeleteMapping("{id}")
+    @PreAuthorize("hasAnyRole('" + ROLE_ADMIN + "')")
     public ResponseEntity<Student> deleteStudent(@PathVariable Long id) {
         studentService.deleteStudent(id);
         return sendNoContentResponse();

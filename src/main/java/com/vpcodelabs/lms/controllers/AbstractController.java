@@ -11,7 +11,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.vpcodelabs.lms.dtos.ErrorResponse;
-import com.vpcodelabs.lms.exception.CustomException;
+import com.vpcodelabs.lms.exceptions.CustomException;
 
 import lombok.extern.slf4j.Slf4j;
 

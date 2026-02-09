@@ -1,5 +1,6 @@
 package com.vpcodelabs.lms.entities;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -22,10 +23,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Table(name = "student")
 @Data
-public class Student {
+public class Student implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "student_id", length = 100, nullable = false)
+    private String studentId;
 
     @Column(length = 100, unique = true, nullable = false)
     private String email;

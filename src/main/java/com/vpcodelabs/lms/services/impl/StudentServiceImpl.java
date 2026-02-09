@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.vpcodelabs.lms.entities.Student;
-import com.vpcodelabs.lms.exception.CustomException;
+import com.vpcodelabs.lms.exceptions.CustomException;
 import com.vpcodelabs.lms.repositories.StudentRepository;
 import com.vpcodelabs.lms.services.StudentService;
 
