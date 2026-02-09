@@ -11,7 +11,7 @@ import com.vpcodelabs.lms.entities.Mentor;
 import com.vpcodelabs.lms.entities.Session;
 import com.vpcodelabs.lms.entities.Student;
 import com.vpcodelabs.lms.entities.Subject;
-import com.vpcodelabs.lms.exception.CustomException;
+import com.vpcodelabs.lms.exceptions.CustomException;
 import com.vpcodelabs.lms.repositories.MentorRepository;
 import com.vpcodelabs.lms.repositories.SessionRepository;
 import com.vpcodelabs.lms.repositories.StudentRepository;

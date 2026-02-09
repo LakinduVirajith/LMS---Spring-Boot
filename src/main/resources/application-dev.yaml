@@ -1,15 +1,33 @@
 spring:
   jpa:
+    # Show SQL queries in logs (development only)
     show-sql: true
     properties:
       hibernate:
+        # Format SQL for readability
         format_sql: true
     hibernate:
+      # Automatically update database schema
       ddl-auto: update
 
+  security:
+    # Publicly accessible endpoints (development)
+    whitelist:
+      - /api/public/**
+      - /v3/api-docs/**
+      - /v3/api-docs.yaml
+      - /swagger-ui/**
+      - /swagger-ui.html
+      - /webjars/**
+      - /swagger-resources/**
+
+# Logging configuration
 # DEBUG < INFO < WARN < ERROR
 logging:
   level:
+    # Default log level
     root: INFO
-#   pattern:
-#     console: "%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36}:%line - %msg%n"
+
+  # Log format for console output
+  pattern:
+    console: '%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36}:%line - %msg%n'

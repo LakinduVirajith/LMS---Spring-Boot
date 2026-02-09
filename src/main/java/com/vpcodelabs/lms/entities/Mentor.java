@@ -27,6 +27,9 @@ public class Mentor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "mentor_id", length = 100, nullable = false)
+    private String mentorId;
+
     @Column(name = "first_name", nullable = false, length = 50)
     private String firstName;
 

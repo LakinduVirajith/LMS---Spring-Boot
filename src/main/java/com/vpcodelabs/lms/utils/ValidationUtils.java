@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import com.vpcodelabs.lms.entities.Mentor;
 import com.vpcodelabs.lms.entities.Session;
 import com.vpcodelabs.lms.entities.Student;
-import com.vpcodelabs.lms.exception.CustomException;
+import com.vpcodelabs.lms.exceptions.CustomException;
 
 public class ValidationUtils {
     /**
