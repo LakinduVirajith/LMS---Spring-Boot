@@ -1,0 +1,63 @@
+server:
+  # Server port
+  port: ${PORT}
+
+spring:
+  application:
+    # Application name
+    name: lms
+
+  profiles:
+    # Active environment profile (dev / prod / etc.)
+    active: ${PROFILE}
+
+  datasource:
+    # PostgreSQL database configuration
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  # JPA / Hibernate configuration
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+  # Redis connection configuration
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
+      database: 0
+      ssl:
+        enabled: true
+      timeout: 60000ms
+
+  # Spring Cache configuration
+  cache:
+    type: redis
+    redis:
+      # Default cache entry TTL (in milliseconds)
+      time-to-live: 600000
+      # Prefix added to all cache keys
+      key-prefix: 'lms:cache:'
+      # Enable cache key prefixing
+      use-key-prefix: true
+
+jwt:
+  # JWT secret key
+  secret: ${JWT_SECRET}
+
+clerk:
+  jwks:
+    # JWKS endpoint for token validation
+    url: ${CLERK_JWKS_URL}
+
+cors:
+  # Allowed CORS origins
+  allowed-origins: ${CORS_ALLOWED_ORIGINS}
+
+auth:
+  validator:
+    # Authentication validator type
+    type: ${AUTH_VALIDATOR_TYPE}

@@ -1,0 +1,20 @@
+spring:
+  jpa:
+    hibernate:
+      # Database schema strategy for production
+      ddl-auto: update
+
+  security:
+    # Publicly accessible endpoints (production)
+    whitelist:
+      - /api/public/**
+
+# Logging configuration
+logging:
+  level:
+    # Log only errors in production
+    root: ERROR
+
+  # Minimal log format for production
+  pattern:
+    console: '%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n'
