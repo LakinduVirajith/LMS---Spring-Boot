@@ -1,6 +1,7 @@
 package com.vpcodelabs.lms.config;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +18,7 @@ import java.time.Duration;
  */
 @Configuration
 @EnableCaching
+@ConditionalOnProperty(name = "app.cache.enabled", havingValue = "true", matchIfMissing = true)
 public class RedisConfig {
     
     @Value("${spring.cache.redis.time-to-live:600000}")

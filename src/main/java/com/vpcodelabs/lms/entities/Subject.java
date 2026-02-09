@@ -1,5 +1,6 @@
 package com.vpcodelabs.lms.entities;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -27,7 +28,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Subject {
+public class Subject implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

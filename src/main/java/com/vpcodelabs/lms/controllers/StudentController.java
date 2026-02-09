@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.vpcodelabs.lms.constants.UserRoles.*;
 import com.vpcodelabs.lms.dtos.StudentDTO;
 import com.vpcodelabs.lms.entities.Student;
 import com.vpcodelabs.lms.security.UserPrincipal;
@@ -28,12 +29,13 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping(path = "/api/v1/students")
 @RequiredArgsConstructor
 @Validated
+@PreAuthorize("isAuthenticated()")
 public class StudentController extends AbstractController{
     private final StudentService studentService;
     private final ModelMapper modelMapper;
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'STUDENT')")
+    @PreAuthorize("hasAnyRole('" + ROLE_ADMIN + "', '" + ROLE_STUDENT + "')")
     public ResponseEntity<Student> createStudent(@Valid @RequestBody StudentDTO studentDTO, Authentication authentication) {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
@@ -61,6 +63,7 @@ public class StudentController extends AbstractController{
     }
 
     @PutMapping("{id}")
+    @PreAuthorize("hasAnyRole('" + ROLE_ADMIN + "', '" + ROLE_STUDENT + "')")
     public ResponseEntity<Student> updateStudent(@PathVariable Long id, @Valid @RequestBody StudentDTO updatedStudentDTO) {
         Student student = modelMapper.map(updatedStudentDTO, Student.class);
         Student updatedStudent = studentService.updateStudentById(id, student);
@@ -68,6 +71,7 @@ public class StudentController extends AbstractController{
     }
 
     @DeleteMapping("{id}")
+    @PreAuthorize("hasAnyRole('" + ROLE_ADMIN + "')")
     public ResponseEntity<Student> deleteStudent(@PathVariable Long id) {
         studentService.deleteStudent(id);
         return sendNoContentResponse();

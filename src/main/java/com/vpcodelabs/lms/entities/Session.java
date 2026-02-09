@@ -1,5 +1,6 @@
 package com.vpcodelabs.lms.entities;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -24,7 +25,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Table(name = "session")
 @Data
-public class Session {
+public class Session implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
