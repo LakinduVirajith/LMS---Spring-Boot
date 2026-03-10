@@ -9,9 +9,7 @@ spring:
     whitelist:
       - /api/public/**
 
-    public-endpoints:
-      - /api/v1/mentors
-      - /api/v1/mentors/*
+    public-endpoints: ${PUBLIC_ENDPOINTS}
 
 # Logging configuration
 logging:

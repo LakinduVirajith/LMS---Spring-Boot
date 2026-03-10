@@ -49,7 +49,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(securityProperties.getWhitelist().toArray(String[]::new)).permitAll()
-                        .requestMatchers(HttpMethod.GET, securityProperties.getPublicEndpoints().toArray(String[]::new)).permitAll()
+                        .requestMatchers(HttpMethod.GET, securityProperties.getPublicEndpoints().split(",")).permitAll()
                         .anyRequest().authenticated()
                 )
             .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)

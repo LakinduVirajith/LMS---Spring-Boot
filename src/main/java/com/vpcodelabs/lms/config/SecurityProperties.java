@@ -15,6 +15,6 @@ import lombok.Setter;
 public class SecurityProperties {
 
     private List<String> whitelist;
-    
-    private List<String> publicEndpoints;
+
+    private String publicEndpoints;
 }
