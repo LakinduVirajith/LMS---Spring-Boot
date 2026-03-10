@@ -15,7 +15,7 @@ spring:
 logging:
   level:
     # Log only errors in production
-    root: INFO
+    root: ERROR
 
   # Minimal log format for production
   pattern:
