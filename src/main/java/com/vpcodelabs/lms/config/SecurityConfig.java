@@ -30,11 +30,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    @Value("${spring.security.whitelist}")
-    private List<String> whitelist;
-
-    @Value("${spring.security.public-endpoints}")
-    private List<String> publicEndpoints;
+    private final SecurityProperties securityProperties;
 
     private final AuthenticationFilter authenticationFilter;
 
@@ -52,8 +48,8 @@ public class SecurityConfig {
                         .authenticationEntryPoint(authenticationEntryPoint)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(whitelist.toArray(String[]::new)).permitAll()
-                        .requestMatchers(HttpMethod.GET, publicEndpoints.toArray(String[]::new)).permitAll()
+                        .requestMatchers(securityProperties.getWhitelist().toArray(String[]::new)).permitAll()
+                        .requestMatchers(HttpMethod.GET, securityProperties.getPublicEndpoints().toArray(String[]::new)).permitAll()
                         .anyRequest().authenticated()
                 )
             .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
