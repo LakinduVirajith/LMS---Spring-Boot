@@ -36,11 +36,14 @@ public class Subject implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "subject_name", nullable = false, length = 20)
+    @Column(name = "subject_name", nullable = false, length = 100)
     private String subjectName;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 500)
     private String description;
+
+    @Column(name = "course_image_url")
+    private String courseimageUrl;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

@@ -17,6 +17,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -25,6 +26,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Table(name = "session")
 @Data
+@Builder
 public class Session implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -53,6 +55,9 @@ public class Session implements Serializable {
 
     @Column(name = "student_rating")
     private Integer studentRating;
+
+    @Column(name = "payment_status", length = 20)
+    private String paymentStatus;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)

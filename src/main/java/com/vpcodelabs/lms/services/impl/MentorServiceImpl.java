@@ -24,6 +24,7 @@ public class MentorServiceImpl implements MentorService {
     private final MentorRepository mentorRepository;
     private final ModelMapper modelMapper;
 
+    @Override
     @CacheEvict(value = "mentors", allEntries = true)
     public Mentor createNewMentor(Mentor mentor) {
         try {
@@ -35,6 +36,7 @@ public class MentorServiceImpl implements MentorService {
         }
     }
 
+    @Override
     @Cacheable(value = "mentors", key = "#pageable.pageNumber + '_' + #pageable.pageSize")
     public Page<Mentor> getAllMentors(Pageable pageable) {
         try {
@@ -46,6 +48,7 @@ public class MentorServiceImpl implements MentorService {
         }
     }
 
+    @Override
     @Cacheable(value = "mentors", key = "#id")
     public Mentor getMentorById(Long id) {
         try {
@@ -63,6 +66,7 @@ public class MentorServiceImpl implements MentorService {
         }
     }
 
+    @Override
     @CacheEvict(value = "mentors", allEntries = true)
     public Mentor updateMentorById(Long id, Mentor updatedMentor) {
         try {
@@ -80,6 +84,7 @@ public class MentorServiceImpl implements MentorService {
         }
     }
 
+    @Override
     public void deleteMentor(Long id) {
         try {
             mentorRepository.deleteById(id);

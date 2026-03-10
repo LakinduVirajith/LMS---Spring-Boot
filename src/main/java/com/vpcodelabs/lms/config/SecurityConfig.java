@@ -1,10 +1,8 @@
 package com.vpcodelabs.lms.config;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -29,8 +27,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    @Value("${spring.security.whitelist}")
-    private List<String> whitelist;
+    private final SecurityProperties securityProperties;
 
     private final AuthenticationFilter authenticationFilter;
 
@@ -48,7 +45,8 @@ public class SecurityConfig {
                         .authenticationEntryPoint(authenticationEntryPoint)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(whitelist.toArray(String[]::new)).permitAll()
+                        .requestMatchers(securityProperties.getWhitelist().toArray(String[]::new)).permitAll()
+                        .requestMatchers(HttpMethod.GET, securityProperties.getPublicEndpoints().split(",")).permitAll()
                         .anyRequest().authenticated()
                 )
             .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)

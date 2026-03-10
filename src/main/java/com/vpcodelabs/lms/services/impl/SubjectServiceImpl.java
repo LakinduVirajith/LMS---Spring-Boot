@@ -25,17 +25,25 @@ public class SubjectServiceImpl implements SubjectService {
     private final MentorRepository mentorRepository;
     private final ModelMapper modelMapper;
 
+    @Override
     public Subject addNewSubject(Long mentorId, Subject subject){
         try {
-            Mentor mentor = mentorRepository.findById(mentorId).get();
+            Mentor mentor = mentorRepository.findByMentorId(String.valueOf(mentorId)).orElseThrow(
+                    () -> new CustomException("Mentor Not found", HttpStatus.NOT_FOUND)
+            );
             subject.setMentor(mentor);
             return subjectRepository.save(subject);
-        } catch (Exception exception) {
+        } catch (CustomException exception) {
+            log.warn("Mentor not found with id: {} to create subject", mentorId, exception);
+            throw new CustomException("Mentor Not found", HttpStatus.NOT_FOUND);
+        } 
+        catch (Exception exception) {
             log.error("Failed to create new subject", exception);
             throw new CustomException("Failed to create new subject", HttpStatus.CONFLICT);
         }
     }
 
+    @Override
     public Page<Subject> getAllSubjects(Pageable pageable){
          try {
             log.debug("getting subjects");
@@ -46,6 +54,7 @@ public class SubjectServiceImpl implements SubjectService {
         }
     }
 
+    @Override
     public Subject getSubjectById(Long id){
         try {
             Subject subject = subjectRepository.findById(id).orElseThrow(
@@ -62,6 +71,7 @@ public class SubjectServiceImpl implements SubjectService {
         }
     }
 
+    @Override
     public Subject updateSubjectById(Long id, Subject updatedSubject){
         try {
             Subject subject = subjectRepository.findById(id).orElseThrow(
@@ -78,6 +88,7 @@ public class SubjectServiceImpl implements SubjectService {
         }
     }
 
+    @Override
     public void deleteSubject(Long id){
         try {
             subjectRepository.deleteById(id);

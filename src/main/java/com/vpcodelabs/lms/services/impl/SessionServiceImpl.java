@@ -1,5 +1,7 @@
 package com.vpcodelabs.lms.services.impl;
 
+import java.util.List;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +18,7 @@ import com.vpcodelabs.lms.repositories.MentorRepository;
 import com.vpcodelabs.lms.repositories.SessionRepository;
 import com.vpcodelabs.lms.repositories.StudentRepository;
 import com.vpcodelabs.lms.repositories.SubjectRepository;
+import com.vpcodelabs.lms.security.UserPrincipal;
 import com.vpcodelabs.lms.services.SessionService;
 import com.vpcodelabs.lms.utils.ValidationUtils;
 
@@ -33,6 +36,7 @@ public class SessionServiceImpl implements SessionService {
     private final SubjectRepository subjectRepository;
     private final ModelMapper modelMapper;
 
+    @Override
     public Session createNewSession(SessionDTO sessionDTO) {
         // Fetch the Related Entities by Their IDs
         try {
@@ -64,6 +68,7 @@ public class SessionServiceImpl implements SessionService {
         }
     }
 
+    @Override
     public Page<Session> getAllSessions(Pageable pageable) {
         try {
             log.debug("getting sessions");
@@ -74,6 +79,7 @@ public class SessionServiceImpl implements SessionService {
         }   
     }
 
+    @Override
     public Session getSessionById(Long id) {
         try {
             Session session = sessionRepository.findById(id).orElseThrow(
@@ -90,6 +96,7 @@ public class SessionServiceImpl implements SessionService {
         }
     }
 
+    @Override
     public Session updateSessionById(Long id, SessionDTO updatedSessionDTO) {
         try {
             Session session = sessionRepository.findById(id).orElseThrow(
@@ -131,6 +138,58 @@ public class SessionServiceImpl implements SessionService {
         }
     }
 
+    @Override
+    public Session enrollSession(UserPrincipal userPrincipal, SessionDTO sessionDTO) {
+        try {
+            Student student = studentRepository.findByEmail(userPrincipal.getEmail()).orElseGet(
+                    () -> {
+                        Student newStudent = new Student();
+                        newStudent.setStudentId(userPrincipal.getId());
+                        newStudent.setEmail(userPrincipal.getEmail());
+                        newStudent.setFirstName(userPrincipal.getFirstName());
+                        newStudent.setLastName(userPrincipal.getLastName());
+                        return studentRepository.save(newStudent);
+                    });
+
+            Mentor mentor = mentorRepository.findByMentorId(String.valueOf(sessionDTO.getMentorId())).orElseThrow(
+                    () -> new CustomException("Mentor not found", HttpStatus.NOT_FOUND)
+            );
+
+            Subject subject = subjectRepository.findById(sessionDTO.getSubjectId()).orElseThrow(
+                    () -> new CustomException("Subject not found", HttpStatus.NOT_FOUND)
+            );
+
+            Session session = Session.builder()
+                    .student(student)
+                    .mentor(mentor)
+                    .subject(subject)
+                    .sessionAt(sessionDTO.getSessionAt())
+                    .durationMinutes(sessionDTO.getDurationMinutes() != null ? sessionDTO.getDurationMinutes() : 60) // Default to 60 minutes if not provided
+                    .sessionStatus("SCHEDULED")
+                    .paymentStatus("PENDING")
+                    .build();
+
+            return sessionRepository.save(session);
+        } catch (CustomException exception) {
+            log.error("Dependencies not found to map: {}, Failed to enroll session", exception.getMessage());
+            throw exception;
+        } catch (Exception exception) {
+            log.error("Failed to enroll session", exception);
+            throw new CustomException("Failed to enroll session", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Override
+    public List<Session> getSessionsByStudentEmail(String studentEmail) {
+        try {
+            return sessionRepository.findByStudentEmail(studentEmail);
+        } catch (Exception exception) {
+            log.error("Failed to get sessions by student email: {}", studentEmail, exception);
+            throw new CustomException("Failed to get sessions by student email", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Override
     public void deleteSession(Long id) {
         try {
             sessionRepository.deleteById(id);
@@ -139,4 +198,6 @@ public class SessionServiceImpl implements SessionService {
             throw new CustomException("Failed to delete session", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    
 }

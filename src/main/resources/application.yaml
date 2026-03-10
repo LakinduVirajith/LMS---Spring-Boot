@@ -1,6 +1,6 @@
 server:
   # Server port
-  port: ${PORT}
+  port: ${PORT:8080}
 
 spring:
   application:
