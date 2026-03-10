@@ -23,26 +23,26 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
   # Redis connection configuration
-  data:
-    redis:
-      host: ${REDIS_HOST}
-      port: ${REDIS_PORT}
-      password: ${REDIS_PASSWORD}
-      database: 0
-      ssl:
-        enabled: true
-      timeout: 60000ms
+  # data:
+  #   redis:
+  #     host: ${REDIS_HOST}
+  #     port: ${REDIS_PORT}
+  #     password: ${REDIS_PASSWORD}
+  #     database: 0
+  #     ssl:
+  #       enabled: true
+  #     timeout: 60000ms
 
-  # Spring Cache configuration
-  cache:
-    type: redis
-    redis:
-      # Default cache entry TTL (in milliseconds)
-      time-to-live: 600000
-      # Prefix added to all cache keys
-      key-prefix: 'lms:cache:'
-      # Enable cache key prefixing
-      use-key-prefix: true
+  # # Spring Cache configuration
+  # cache:
+  #   type: redis
+  #   redis:
+  #     # Default cache entry TTL (in milliseconds)
+  #     time-to-live: 600000
+  #     # Prefix added to all cache keys
+  #     key-prefix: 'lms:cache:'
+  #     # Enable cache key prefixing
+  #     use-key-prefix: true
 
 jwt:
   # JWT secret key
