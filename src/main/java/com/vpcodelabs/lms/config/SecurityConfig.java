@@ -34,7 +34,7 @@ public class SecurityConfig {
     private List<String> whitelist;
 
     @Value("${spring.security.public-endpoints}")
-    private String publicEndpoints;
+    private List<String> publicEndpoints;
 
     private final AuthenticationFilter authenticationFilter;
 
@@ -53,7 +53,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(whitelist.toArray(String[]::new)).permitAll()
-                        .requestMatchers(HttpMethod.GET, publicEndpoints.split(",")).permitAll()
+                        .requestMatchers(HttpMethod.GET, publicEndpoints.toArray(String[]::new)).permitAll()
                         .anyRequest().authenticated()
                 )
             .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
