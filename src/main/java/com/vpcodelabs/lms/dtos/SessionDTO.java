@@ -33,4 +33,6 @@ public class SessionDTO {
 
     @Min(value = 1, message = "Rating must be at least 1")
     private Integer studentRating;
+
+    private String paymentStatus;
 }

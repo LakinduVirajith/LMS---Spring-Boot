@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -32,6 +33,9 @@ public class SecurityConfig {
     @Value("${spring.security.whitelist}")
     private List<String> whitelist;
 
+    @Value("${spring.security.public-endpoints}")
+    private List<String> publicEndpoints;
+
     private final AuthenticationFilter authenticationFilter;
 
     private final AuthenticationEntryPoint authenticationEntryPoint;
@@ -49,6 +53,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(whitelist.toArray(String[]::new)).permitAll()
+                        .requestMatchers(HttpMethod.GET, publicEndpoints.toArray(String[]::new)).permitAll()
                         .anyRequest().authenticated()
                 )
             .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)

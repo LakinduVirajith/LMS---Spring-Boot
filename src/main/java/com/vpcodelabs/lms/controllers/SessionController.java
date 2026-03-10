@@ -1,9 +1,13 @@
 package com.vpcodelabs.lms.controllers;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vpcodelabs.lms.dtos.SessionDTO;
+import com.vpcodelabs.lms.dtos.SessionResponseDTO;
 import com.vpcodelabs.lms.entities.Session;
+import com.vpcodelabs.lms.security.UserPrincipal;
 import com.vpcodelabs.lms.services.SessionService;
 
 import jakarta.validation.Valid;
@@ -55,9 +61,42 @@ public class SessionController extends AbstractController{
         return sendOkResponse(updatedSession);
     }
 
+    @PostMapping("/enrollment")
+    public ResponseEntity<SessionResponseDTO> postEnrollment(@RequestBody SessionDTO sessionDTO, Authentication authentication) {
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        Session enrolledSession = sessionService.enrollSession(userPrincipal, sessionDTO);
+        
+        return sendCreatedResponse(convertToSessionResponseDTO(enrolledSession));
+    }
+
+    @GetMapping("/enrollments")
+    public ResponseEntity<List<SessionResponseDTO>> getEnrollments(Authentication authentication) {
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        List<Session> sessions = sessionService.getSessionsByStudentEmail(userPrincipal.getEmail());
+        List<SessionResponseDTO> enrollments = sessions.stream()
+            .map(this::convertToSessionResponseDTO)
+            .collect(Collectors.toList());
+        return sendOkResponse(enrollments);
+    }
+
     @DeleteMapping("{id}")
     public ResponseEntity<Session> deleteSession(@PathVariable Long id) {
         sessionService.deleteSession(id);
         return sendNoContentResponse();
+    }
+
+    private SessionResponseDTO convertToSessionResponseDTO(Session session) {
+        SessionResponseDTO sessionResponseDTO = SessionResponseDTO.builder()
+            .id(session.getId())
+            .mentorName(session.getMentor().getFirstName() + " " + session.getMentor().getLastName())
+            .mentorProfileImageUrl(session.getMentor().getProfileImageUrl())
+            .subjectName(session.getSubject().getSubjectName())
+            .sessionAt(session.getSessionAt())
+            .durationMinutes(session.getDurationMinutes())
+            .sessionStatus(session.getSessionStatus())
+            .paymentStatus(session.getPaymentStatus())
+            .meetingLink(session.getMeetingLink())
+            .build();
+        return sessionResponseDTO;
     }
 }

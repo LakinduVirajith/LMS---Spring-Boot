@@ -29,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping(path = "/api/v1/mentors")
 @RequiredArgsConstructor
 @Validated
-@PreAuthorize("isAuthenticated()")
+// @PreAuthorize("isAuthenticated()")
 public class MentorController extends AbstractController{
     private final MentorService mentorService;
     private final ModelMapper modelMapper;
@@ -40,10 +40,16 @@ public class MentorController extends AbstractController{
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         
         Mentor mentor = modelMapper.map(mentorDTO, Mentor.class);
-        mentor.setMentorId(userPrincipal.getId());
-        mentor.setFirstName(userPrincipal.getFirstName());
-        mentor.setLastName(userPrincipal.getLastName());
-        mentor.setEmail(userPrincipal.getEmail());
+
+        boolean isAdmin = authentication.getAuthorities().stream()
+            .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+
+        if (!isAdmin) {
+            mentor.setMentorId(userPrincipal.getId());
+            mentor.setFirstName(userPrincipal.getFirstName());
+            mentor.setLastName(userPrincipal.getLastName());
+            mentor.setEmail(userPrincipal.getEmail());
+        }
 
         Mentor createdMentor = mentorService.createNewMentor(mentor);
 

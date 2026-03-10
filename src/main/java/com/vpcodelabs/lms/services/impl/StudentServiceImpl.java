@@ -22,6 +22,7 @@ public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
     private final ModelMapper modelMapper;
 
+    @Override
     public Student createNewStudent(Student student) {
         try {
             return studentRepository.save(student);
@@ -32,6 +33,7 @@ public class StudentServiceImpl implements StudentService {
         
     }
 
+    @Override
     public Page<Student> getAllStudents(Pageable pageable) {
         try {
             log.debug("getting students");
@@ -42,6 +44,7 @@ public class StudentServiceImpl implements StudentService {
         }
     }
 
+    @Override
     public Student getStudentById(Long id) {
         try {
             Student student = studentRepository.findById(id).orElseThrow(
@@ -57,6 +60,7 @@ public class StudentServiceImpl implements StudentService {
         }
     }
 
+    @Override
     public Student updateStudentById(Long id, Student updatedStudent) {
         try {
             Student student = studentRepository.findById(id).orElseThrow(
@@ -72,6 +76,7 @@ public class StudentServiceImpl implements StudentService {
         }
     }
 
+    @Override
     public void deleteStudent(Long id) {
          try {
             studentRepository.deleteById(id);

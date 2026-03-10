@@ -61,6 +61,21 @@ public class Mentor implements Serializable {
     @Column(columnDefinition = "TEXT", length = 500)
     private String bio;
 
+    @Column(name = "profile_image_url")
+    private String profileImageUrl;
+
+    @Column(name = "positive_reviews")
+    private Integer positiveReviews;
+
+    @Column(name = "total_enrollments")
+    private Integer totalEnrollments;
+
+    @Column(name = "is_certified")
+    private Boolean isCertified;
+
+    @Column(name = "start_year", length = 10)
+    private String startYear;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private Date createdAt;

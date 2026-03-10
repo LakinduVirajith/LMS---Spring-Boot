@@ -21,6 +21,8 @@ spring:
       - /webjars/**
       - /swagger-resources/**
 
+    public-endpoints: ${PUBLIC_ENDPOINTS}
+
 # Logging configuration
 # DEBUG < INFO < WARN < ERROR
 logging:
