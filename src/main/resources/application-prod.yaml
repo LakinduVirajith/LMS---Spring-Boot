@@ -8,6 +8,7 @@ spring:
     # Publicly accessible endpoints (production)
     whitelist:
       - /api/public/**
+      - /actuator/health
 
     public-endpoints: ${PUBLIC_ENDPOINTS}
 

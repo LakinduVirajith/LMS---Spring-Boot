@@ -12,12 +12,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 import com.vpcodelabs.lms.security.AuthenticationFilter;
+import com.vpcodelabs.lms.security.LMSAuthenticationEntryPoint;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,9 +29,9 @@ public class SecurityConfig {
 
     private final SecurityProperties securityProperties;
 
-    private final AuthenticationFilter authenticationFilter;
+    private final AuthenticationFilter clerkAuthenticationFilter;
 
-    private final AuthenticationEntryPoint authenticationEntryPoint;
+    private final LMSAuthenticationEntryPoint authenticationEntryPoint;
     
     private final CorsConfigurationSource corsConfigurationSource;
 
@@ -49,7 +49,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, securityProperties.getPublicEndpoints().split(",")).permitAll()
                         .anyRequest().authenticated()
                 )
-            .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(clerkAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .httpBasic(AbstractHttpConfigurer::disable);
 
         return http.build();
