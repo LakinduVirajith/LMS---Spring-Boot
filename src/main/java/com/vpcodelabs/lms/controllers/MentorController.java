@@ -24,13 +24,11 @@ import com.vpcodelabs.lms.services.MentorService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping(path = "/api/v1/mentors")
 @RequiredArgsConstructor
 @Validated
-@Slf4j
 // @PreAuthorize("isAuthenticated()")
 public class MentorController extends AbstractController{
     private final MentorService mentorService;
@@ -41,14 +39,11 @@ public class MentorController extends AbstractController{
     public ResponseEntity<Mentor> createMentor(@Valid @RequestBody MentorDTO mentorDTO, Authentication authentication) {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         
-        log.info("1");
         Mentor mentor = modelMapper.map(mentorDTO, Mentor.class);
 
-        log.info("2");
         boolean isAdmin = authentication.getAuthorities().stream()
-            .anyMatch(auth -> auth.getAuthority().equals(ROLE_ADMIN));
+            .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
 
-        log.info("3");
         if (!isAdmin) {
             mentor.setMentorId(userPrincipal.getId());
             mentor.setFirstName(userPrincipal.getFirstName());
@@ -56,10 +51,8 @@ public class MentorController extends AbstractController{
             mentor.setEmail(userPrincipal.getEmail());
         }
 
-        log.info("4");
         Mentor createdMentor = mentorService.createNewMentor(mentor);
 
-        log.info("5");
         return sendCreatedResponse(createdMentor);
     }
     
