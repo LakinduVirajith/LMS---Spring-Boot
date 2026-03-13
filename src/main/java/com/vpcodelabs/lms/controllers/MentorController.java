@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.vpcodelabs.lms.constants.UserRoles.*;
 import com.vpcodelabs.lms.dtos.MentorDTO;
 import com.vpcodelabs.lms.entities.Mentor;
 import com.vpcodelabs.lms.security.UserPrincipal;
@@ -35,7 +34,7 @@ public class MentorController extends AbstractController{
     private final ModelMapper modelMapper;
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('" + ROLE_ADMIN + "', '" + ROLE_MENTOR + "')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MENTOR')")
     public ResponseEntity<Mentor> createMentor(@Valid @RequestBody MentorDTO mentorDTO, Authentication authentication) {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         
@@ -57,6 +56,7 @@ public class MentorController extends AbstractController{
     }
     
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'STUDENT')")
     public ResponseEntity<Page<Mentor>> getAllMentors(Pageable pageable) {
         Page<Mentor> mentors = mentorService.getAllMentors(pageable);
         return sendOkResponse(mentors);
@@ -69,7 +69,7 @@ public class MentorController extends AbstractController{
     }    
 
     @PutMapping("{id}")
-    @PreAuthorize("hasAnyRole('" + ROLE_ADMIN + "', '" + ROLE_MENTOR + "')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MENTOR')")
     public ResponseEntity<Mentor> updateMentor(@PathVariable Long id, @Valid @RequestBody MentorDTO updatedMentorDTO) {
         Mentor mentor = modelMapper.map(updatedMentorDTO, Mentor.class);
         Mentor updatedMentor = mentorService.updateMentorById(id, mentor);
@@ -78,7 +78,7 @@ public class MentorController extends AbstractController{
     }
 
     @DeleteMapping("{id}")
-    @PreAuthorize("hasAnyRole('" + ROLE_ADMIN + "')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Mentor> deleteMentor(@PathVariable Long id) {
         mentorService.deleteMentor(id);
         return sendNoContentResponse();
