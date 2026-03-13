@@ -20,6 +20,10 @@ spring:
       - /swagger-ui.html
       - /webjars/**
       - /swagger-resources/**
+      - /actuator/**
+      - /actuator/health
+      - /actuator/info
+      - /actuator/metrics
 
     public-endpoints: ${PUBLIC_ENDPOINTS}
 
@@ -33,3 +37,14 @@ logging:
   # Log format for console output
   pattern:
     console: '%d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36}:%line - %msg%n'
+
+# Actuator configuration
+management:
+  endpoints:
+    web:
+      # Expose all endpoints in dev for testing
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always # Show full details in dev
