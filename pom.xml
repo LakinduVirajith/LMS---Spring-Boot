@@ -41,6 +41,15 @@
 		</dependency>
 
 		<!-- ================================= -->
+		<!-- Spring Boot Actuator -->
+		<!-- ================================= -->
+		<!-- Provides monitoring endpoints for health, metrics, info, and more -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+
+		<!-- ================================= -->
 		<!-- API Documentation (Swagger / OpenAPI) -->
 		<!-- ================================= -->
 		<!-- SpringDoc OpenAPI integration for Spring MVC.
