@@ -43,7 +43,7 @@ public class Subject implements Serializable {
     private String description;
 
     @Column(name = "course_image_url")
-    private String courseimageUrl;
+    private String courseImageUrl;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
