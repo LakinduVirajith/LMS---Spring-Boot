@@ -8,7 +8,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.vpcodelabs.lms.constants.PaymentStatus;
+import com.vpcodelabs.lms.constants.SessionStatus;
 import com.vpcodelabs.lms.dtos.SessionDTO;
+import com.vpcodelabs.lms.dtos.SessionResponseDTO;
 import com.vpcodelabs.lms.entities.Mentor;
 import com.vpcodelabs.lms.entities.Session;
 import com.vpcodelabs.lms.entities.Student;
@@ -69,14 +72,32 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
-    public Page<Session> getAllSessions(Pageable pageable) {
+    public Page<SessionResponseDTO> getAllSessions(Pageable pageable) {
         try {
-            log.debug("getting sessions");
-            return sessionRepository.findAll(pageable);
+            Page<Session> sessions = sessionRepository.findAll(pageable);
+
+            return sessions.map(session ->
+                SessionResponseDTO.builder()
+                    .id(session.getId())
+                    .studentName(
+                            session.getStudent().getFirstName() + " " +
+                            session.getStudent().getLastName()
+                    )
+                    .mentorName(
+                            session.getMentor().getFirstName() + " " +
+                            session.getMentor().getLastName()
+                    )
+                    .subjectName(session.getSubject().getSubjectName())
+                    .sessionAt(session.getSessionAt())
+                    .durationMinutes(session.getDurationMinutes())
+                    .paymentStatus(session.getPaymentStatus().name())
+                    .sessionStatus(session.getSessionStatus().name())
+                    .meetingLink(session.getMeetingLink())
+                    .build()
+            );
         } catch (Exception exception) {
-            log.error("Failed to get all sessions", exception);
             throw new CustomException("Failed to get all sessions", HttpStatus.INTERNAL_SERVER_ERROR);
-        }   
+        }
     }
 
     @Override
@@ -165,8 +186,8 @@ public class SessionServiceImpl implements SessionService {
                     .subject(subject)
                     .sessionAt(sessionDTO.getSessionAt())
                     .durationMinutes(sessionDTO.getDurationMinutes() != null ? sessionDTO.getDurationMinutes() : 60) // Default to 60 minutes if not provided
-                    .sessionStatus("SCHEDULED")
-                    .paymentStatus("PENDING")
+                    .sessionStatus(SessionStatus.SCHEDULED)
+                    .paymentStatus(PaymentStatus.PENDING)
                     .build();
 
             return sessionRepository.save(session);
@@ -190,6 +211,50 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
+    public Session confirmPayment(Long sessionId) {
+        try{
+            Session session = sessionRepository.findById(sessionId)
+                .orElseThrow(() -> new CustomException("Session not found", HttpStatus.NOT_FOUND));
+
+            session.setPaymentStatus(PaymentStatus.CONFIRMED);
+            return sessionRepository.save(session);
+        } catch (Exception exception) {
+            log.error("Failed to confirm payment with session id {}", sessionId, exception);
+            throw new CustomException("Failed to confirm payment in session", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Override
+    public Session markePaymentCompleted(Long sessionId) {
+        try{
+            Session session = sessionRepository.findById(sessionId)
+                .orElseThrow(() -> new CustomException("Session not found", HttpStatus.NOT_FOUND));
+
+            session.setPaymentStatus(PaymentStatus.COMPLETED);
+            return sessionRepository.save(session);
+        } catch (Exception exception) {
+            log.error("Failed to complete payment with session id {}", sessionId, exception);
+            throw new CustomException("Failed to complete payment in session", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Override
+    public Session addMeetingLink(Long sessionId, String meetingLink) {
+        try {
+            Session session = sessionRepository.findById(sessionId)
+                .orElseThrow(() -> new CustomException("Session not found", HttpStatus.NOT_FOUND));
+
+            session.setMeetingLink(meetingLink);
+            session.setSessionStatus(SessionStatus.SCHEDULED);
+
+            return sessionRepository.save(session);
+        } catch (Exception exception) {
+            log.error("Failed to add meeting link session with id {}", sessionId, exception);
+            throw new CustomException("Failed to add meeting link", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Override
     public void deleteSession(Long id) {
         try {
             sessionRepository.deleteById(id);
@@ -197,7 +262,5 @@ public class SessionServiceImpl implements SessionService {
             log.error("Failed to delete session with id {}", id, exception);
             throw new CustomException("Failed to delete session", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
-
-    
+    }    
 }

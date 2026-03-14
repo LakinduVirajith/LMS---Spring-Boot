@@ -6,13 +6,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.vpcodelabs.lms.dtos.SessionDTO;
+import com.vpcodelabs.lms.dtos.SessionResponseDTO;
 import com.vpcodelabs.lms.entities.Session;
 import com.vpcodelabs.lms.security.UserPrincipal;
 
 public interface SessionService {
     Session createNewSession(SessionDTO sessionDTO);
 
-    Page<Session> getAllSessions(Pageable pageable);
+    Page<SessionResponseDTO> getAllSessions(Pageable pageable);
     
     Session getSessionById(Long id);
     
@@ -21,6 +22,12 @@ public interface SessionService {
     Session enrollSession(UserPrincipal userPrincipal, SessionDTO sessionDTO);
 
     List<Session> getSessionsByStudentEmail(String studentEmail);
+
+    Session confirmPayment(Long sessionId);
+
+    Session markePaymentCompleted(Long sessionId);
+
+    Session addMeetingLink(Long sessionId, String meetingLink);
     
     void deleteSession(Long id);
 }
