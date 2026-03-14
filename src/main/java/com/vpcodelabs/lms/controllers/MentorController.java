@@ -1,5 +1,7 @@
 package com.vpcodelabs.lms.controllers;
 
+import static com.vpcodelabs.lms.constants.UserRoles.*;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.vpcodelabs.lms.constants.UserRoles.*;
 import com.vpcodelabs.lms.dtos.MentorDTO;
 import com.vpcodelabs.lms.entities.Mentor;
 import com.vpcodelabs.lms.security.UserPrincipal;
@@ -29,7 +30,6 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping(path = "/api/v1/mentors")
 @RequiredArgsConstructor
 @Validated
-// @PreAuthorize("isAuthenticated()")
 public class MentorController extends AbstractController{
     private final MentorService mentorService;
     private final ModelMapper modelMapper;

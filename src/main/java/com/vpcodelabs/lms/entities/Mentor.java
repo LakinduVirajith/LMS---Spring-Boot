@@ -31,7 +31,7 @@ public class Mentor implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "mentor_id", length = 100, nullable = false)
+    @Column(name = "mentor_id", nullable = false)
     private String mentorId;
 
     @Column(name = "first_name", nullable = false, length = 50)
@@ -74,7 +74,7 @@ public class Mentor implements Serializable {
     private Boolean isCertified;
 
     @Column(name = "start_year", length = 10)
-    private String startYear;
+    private Integer startYear;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

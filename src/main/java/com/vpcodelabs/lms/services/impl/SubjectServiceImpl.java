@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.vpcodelabs.lms.dtos.SubjectResponseDTO;
 import com.vpcodelabs.lms.entities.Mentor;
 import com.vpcodelabs.lms.entities.Subject;
 import com.vpcodelabs.lms.exceptions.CustomException;
@@ -44,10 +45,21 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
-    public Page<Subject> getAllSubjects(Pageable pageable){
-         try {
+    public Page<SubjectResponseDTO> getAllSubjects(Pageable pageable){
+        try {
             log.debug("getting subjects");
-            return subjectRepository.findAll(pageable);
+            Page<Subject> subjects = subjectRepository.findAll(pageable);
+
+            return subjects.map(subject ->
+                SubjectResponseDTO.builder()
+                    .id(subject.getId())
+                    .subjectName(subject.getSubjectName())
+                    .description(subject.getDescription())
+                    .courseImageUrl(subject.getCourseImageUrl())
+                    .mentorId(subject.getMentor().getId())
+                    .mentorName(subject.getMentor().getFirstName() + " " + subject.getMentor().getLastName())
+                    .build()
+                );
         } catch (Exception exception) {
             log.error("Failed to get all subjects", exception);
             throw new CustomException("Failed to get all subjects", HttpStatus.INTERNAL_SERVER_ERROR);

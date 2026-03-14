@@ -30,13 +30,13 @@ public class AuthenticationFilter extends OncePerRequestFilter {
         String token = extractToken(request);
 
         if (token != null && tokenValidator.validateToken(token)) {
-            String userId = tokenValidator.extractUserId(token);
 
+            String userId = tokenValidator.extractUserId(token);
             String email = tokenValidator.extractEmail(token);
             String firstName = tokenValidator.extractFirstName(token);
             String lastName = tokenValidator.extractLastName(token);
 
-            UserPrincipal userPrincipal = new UserPrincipal(userId,email,firstName,lastName);
+            UserPrincipal userPrincipal = new UserPrincipal(userId, email, firstName, lastName);
 
             List<String> roles = tokenValidator.extractRoles(token);
             List<GrantedAuthority> authorities = roles != null ?

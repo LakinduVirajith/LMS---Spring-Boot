@@ -7,9 +7,13 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vpcodelabs.lms.constants.PaymentStatus;
+import com.vpcodelabs.lms.constants.SessionStatus;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -41,8 +45,9 @@ public class Session implements Serializable {
     @Column(name = "duration_minutes")
     private Integer durationMinutes;
 
-    @Column(name = "session_status", length = 50)
-    private String sessionStatus;
+    @Column(name = "session_status")
+    @Enumerated(EnumType.STRING)
+    private SessionStatus sessionStatus;
 
     @Column(name = "meeting_link")
     private String meetingLink;
@@ -56,8 +61,9 @@ public class Session implements Serializable {
     @Column(name = "student_rating")
     private Integer studentRating;
 
-    @Column(name = "payment_status", length = 20)
-    private String paymentStatus;
+    @Column(name = "payment_status")
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus paymentStatus;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
