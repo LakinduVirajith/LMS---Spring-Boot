@@ -189,8 +189,16 @@ public class SessionServiceImpl implements SessionService {
                     .sessionStatus(SessionStatus.PENDING)
                     .paymentStatus(PaymentStatus.PENDING)
                     .build();
+            Session savedSession = sessionRepository.save(session);
 
-            return sessionRepository.save(session);
+            if (mentor.getTotalEnrollments() == null) {
+                mentor.setTotalEnrollments(1);
+            } else {
+                mentor.setTotalEnrollments(mentor.getTotalEnrollments() + 1);
+            }
+            mentorRepository.save(mentor);
+
+            return savedSession;
         } catch (CustomException exception) {
             log.error("Dependencies not found to map: {}, Failed to enroll session", exception.getMessage());
             throw exception;
