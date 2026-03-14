@@ -66,9 +66,6 @@ public class ClerkValidator implements TokenValidator {
     @Override
     public String extractUserId(String token) {
         try {
-            if (!validateToken(token)) {
-                return null;
-            }
             DecodedJWT decodedJWT = decodeToken(token);
             return decodedJWT != null ? decodedJWT.getSubject() : null;
         } catch (Exception e) {
@@ -80,14 +77,8 @@ public class ClerkValidator implements TokenValidator {
     @Override
     public List<String> extractRoles(String token) {
         try {
-            if (!validateToken(token)) {
-                return null;
-            }
             DecodedJWT decodedJWT = decodeToken(token);
-            if (decodedJWT == null) {
-                return null;
-            }
-            return decodedJWT.getClaim("roles").asList(String.class);
+            return decodedJWT != null ? decodedJWT.getClaim("roles").asList(String.class) : null;
         } catch (Exception e) {
             log.error("Error extracting roles: {}", e.getMessage());
             return null;
@@ -97,9 +88,6 @@ public class ClerkValidator implements TokenValidator {
     @Override
     public String extractFirstName(String token) {
         try {
-            if (!validateToken(token)) {
-                return null;
-            }
             DecodedJWT decodedJWT = decodeToken(token);
             return decodedJWT != null ? decodedJWT.getClaim("first_name").asString() : null;
         } catch (Exception e) {
@@ -111,9 +99,6 @@ public class ClerkValidator implements TokenValidator {
     @Override
     public String extractLastName(String token) {
         try {
-            if (!validateToken(token)) {
-                return null;
-            }
             DecodedJWT decodedJWT = decodeToken(token);
             return decodedJWT != null ? decodedJWT.getClaim("last_name").asString() : null;
         } catch (Exception e) {
@@ -125,9 +110,6 @@ public class ClerkValidator implements TokenValidator {
     @Override
     public String extractEmail(String token) {
         try {
-            if (!validateToken(token)) {
-                return null;
-            }
             DecodedJWT decodedJWT = decodeToken(token);
             return decodedJWT != null ? decodedJWT.getClaim("email").asString() : null;
         } catch (Exception e) {
