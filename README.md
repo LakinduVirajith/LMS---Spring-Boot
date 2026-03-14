@@ -152,7 +152,7 @@ CORS_ALLOWED_ORIGINS=https://frontend.com
 
 ## Deployment
 
-- **Frontend (Vercel):** [https://lms-react-mblwzxu4f-lakindu-virajiths-projects.vercel.app/](https://lms-react-mblwzxu4f-lakindu-virajiths-projects.vercel.app/)
+- **Frontend (Vercel):** [https://lms-react-tawny.vercel.app](https://lms-react-tawny.vercel.app)
 - **Backend (Render):** [https://lms-spring-boot.onrender.com](https://lms-spring-boot.onrender.com)
 
 ---
