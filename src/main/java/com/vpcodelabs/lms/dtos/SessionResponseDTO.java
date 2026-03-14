@@ -10,6 +10,8 @@ import lombok.Data;
 public class SessionResponseDTO {
     private Long id;
 
+    private String studentName;
+
     private String mentorName;
     
     private String mentorProfileImageUrl;
