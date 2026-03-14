@@ -28,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping(path = "/api/v1/mentors")
 @RequiredArgsConstructor
 @Validated
+// @PreAuthorize("isAuthenticated()")
 public class MentorController extends AbstractController{
     private final MentorService mentorService;
     private final ModelMapper modelMapper;
