@@ -32,33 +32,31 @@ public class ClerkValidator implements TokenValidator {
     @Override
     public boolean validateToken(String token){
         try {
-            // Step 1: Decode JWT without verification to get header info
+            // Decode JWT without verification to get header info
             DecodedJWT decodedJWT = decodeToken(token);
             if (decodedJWT == null) {
                 log.error("Failed to decode token");
                 return false;
             }
 
-            // Step 2: Extract key ID (kid) from the token header
+            // Extract key ID (kid) from the token header
             String kid = decodedJWT.getKeyId();
             if (kid == null || kid.isEmpty()) {
                 log.error("Token does not contain a key ID (kid)");
                 return false;
             }
 
-            log.debug("Token kid: {}", kid);
-
-            // Step 3: Fetch JWK and verify signature
+            // Fetch JWK and verify signature
             if (!verifyTokenSignature(token, kid)) {
-                log.error("Token signature verification failed");
                 return false;
             }
 
-            log.debug("Token validation successful for subject: {}", decodedJWT.getSubject());
-            return true;
+            log.debug("Token validation successful for subject: {}, email: {}", decodedJWT.getSubject(), decodedJWT.getClaim("email").asString());
+            log.debug("Roles in token: {}", decodedJWT.getClaim("roles").asList(String.class));
 
+            return true;
         } catch (Exception e) {
-            log.error("Error validating token: {}", e.getMessage());
+            log.error("Unexpected error validating token: {}", e.getMessage(), e);
             return false;
         }
     }
@@ -129,19 +127,14 @@ public class ClerkValidator implements TokenValidator {
 
     private boolean verifyTokenSignature(String token, String kid) {
         try {
-            // Fetch the JWK from Clerk
             Jwk jwk = jwkProvider.get(kid);
-
-            // Get the public key from the JWK
             PublicKey publicKey = jwk.getPublicKey();
 
-            // Create algorithm and verify the token
             Algorithm algorithm = Algorithm.RSA256((java.security.interfaces.RSAPublicKey) publicKey, null);
             JWT.require(algorithm).build().verify(token);
 
             log.debug("Token signature verified successfully for kid: {}", kid);
             return true;
-
         } catch (Exception e) {
             log.error("Signature verification failed for kid {}: {}", kid, e.getMessage());
             return false;

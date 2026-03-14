@@ -51,6 +51,7 @@ public class StudentController extends AbstractController{
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('" + ROLE_ADMIN + "')")
     public ResponseEntity<Page<Student>> getAllStudents(Pageable pageable) {
         Page<Student> students = studentService.getAllStudents(pageable);
         return sendOkResponse(students);

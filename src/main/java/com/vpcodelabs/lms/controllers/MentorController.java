@@ -1,5 +1,7 @@
 package com.vpcodelabs.lms.controllers;
 
+import static com.vpcodelabs.lms.constants.UserRoles.*;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,13 +30,12 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping(path = "/api/v1/mentors")
 @RequiredArgsConstructor
 @Validated
-// @PreAuthorize("isAuthenticated()")
 public class MentorController extends AbstractController{
     private final MentorService mentorService;
     private final ModelMapper modelMapper;
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'MENTOR')")
+    @PreAuthorize("hasAnyRole('" + ROLE_ADMIN + "', '" + ROLE_MENTOR + "')")
     public ResponseEntity<Mentor> createMentor(@Valid @RequestBody MentorDTO mentorDTO, Authentication authentication) {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         
@@ -68,7 +69,7 @@ public class MentorController extends AbstractController{
     }    
 
     @PutMapping("{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'MENTOR')")
+    @PreAuthorize("hasAnyRole('" + ROLE_ADMIN + "', '" + ROLE_MENTOR + "')")
     public ResponseEntity<Mentor> updateMentor(@PathVariable Long id, @Valid @RequestBody MentorDTO updatedMentorDTO) {
         Mentor mentor = modelMapper.map(updatedMentorDTO, Mentor.class);
         Mentor updatedMentor = mentorService.updateMentorById(id, mentor);
@@ -77,7 +78,7 @@ public class MentorController extends AbstractController{
     }
 
     @DeleteMapping("{id}")
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('" + ROLE_ADMIN + "')")
     public ResponseEntity<Mentor> deleteMentor(@PathVariable Long id) {
         mentorService.deleteMentor(id);
         return sendNoContentResponse();

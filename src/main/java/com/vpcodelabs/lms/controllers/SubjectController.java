@@ -1,5 +1,7 @@
 package com.vpcodelabs.lms.controllers;
 
+import static com.vpcodelabs.lms.constants.UserRoles.*;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,7 +35,7 @@ public class SubjectController extends AbstractController {
     private final SubjectService subjectService;
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('" + ROLE_ADMIN + "')")
     public ResponseEntity<Subject> createSubject(@Valid @RequestBody SubjectDTO subjectDTO) {
         Subject subject = modelMapper.map(subjectDTO, Subject.class);
         Subject createdSubject =  subjectService.addNewSubject(subjectDTO.getMentorId(), subject);
@@ -41,21 +43,21 @@ public class SubjectController extends AbstractController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('" + ROLE_ADMIN + "')")
     public ResponseEntity<Page<SubjectResponseDTO>> getAllSubjects(Pageable pageable) {
         Page<SubjectResponseDTO> subjects = subjectService.getAllSubjects(pageable);
         return sendOkResponse(subjects);
     }
 
     @GetMapping("{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'STUDENT')") 
+    @PreAuthorize("hasAnyRole('" + ROLE_ADMIN + "', '" + ROLE_STUDENT + "')")
     public ResponseEntity<Subject> getSubjectById(@PathVariable Long id) {
         Subject subject = subjectService.getSubjectById(id);
         return sendOkResponse(subject);
     }
 
     @PutMapping("{id}")
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('" + ROLE_ADMIN + "')")
     public ResponseEntity<Subject> updateSubject(@PathVariable Long id, @Valid @RequestBody SubjectDTO updatedSubjectDTO) {
         Subject subject = modelMapper.map(updatedSubjectDTO, Subject.class);
         Subject updatedSubject = subjectService.updateSubjectById(id, subject);
@@ -63,7 +65,7 @@ public class SubjectController extends AbstractController {
     }
 
     @DeleteMapping("{id}")
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('" + ROLE_ADMIN + "')")
     public ResponseEntity<Subject> deleteSubject(@PathVariable Long id) {
         subjectService.deleteSubject(id);
         return sendNoContentResponse();
