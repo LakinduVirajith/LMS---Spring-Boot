@@ -60,13 +60,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             log.error("Authentication set for user: {} with roles: {}", email, authorities);
             log.error("Roles from token: {}", roles);
             log.error("Authorities: {}", authorities.stream().map(GrantedAuthority::getAuthority).toList());
-        }else if (token != null) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
-        } else {
-            log.error("No token found for request: {}", request.getMethod() + " " + request.getRequestURI());
         }
-        
         filterChain.doFilter(request, response);
     }
 
