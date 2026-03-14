@@ -3,6 +3,7 @@ package com.vpcodelabs.lms.controllers;
 import static com.vpcodelabs.lms.constants.UserRoles.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -104,9 +105,10 @@ public class SessionController extends AbstractController{
     @PreAuthorize("hasAnyRole('" + ROLE_ADMIN + "', '" + ROLE_MENTOR + "')")
     public ResponseEntity<SessionResponseDTO> addMeetingLink(
             @PathVariable Long id,
-            @RequestBody String meetingLink) {
+            @RequestBody Map<String, String> body) {
 
-        Session session = sessionService.addMeetingLink(id, meetingLink);
+        String link = body.get("link");
+        Session session = sessionService.addMeetingLink(id, link);
         return sendOkResponse(convertToSessionResponseDTO(session));
     }
 

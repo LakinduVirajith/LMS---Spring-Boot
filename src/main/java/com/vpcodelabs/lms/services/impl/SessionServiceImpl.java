@@ -186,7 +186,7 @@ public class SessionServiceImpl implements SessionService {
                     .subject(subject)
                     .sessionAt(sessionDTO.getSessionAt())
                     .durationMinutes(sessionDTO.getDurationMinutes() != null ? sessionDTO.getDurationMinutes() : 60) // Default to 60 minutes if not provided
-                    .sessionStatus(SessionStatus.SCHEDULED)
+                    .sessionStatus(SessionStatus.PENDING)
                     .paymentStatus(PaymentStatus.PENDING)
                     .build();
 
