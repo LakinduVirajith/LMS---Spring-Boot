@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.vpcodelabs.lms.dtos.SessionDTO;
 import com.vpcodelabs.lms.dtos.SessionResponseDTO;
+import com.vpcodelabs.lms.dtos.SessionReviewDTO;
 import com.vpcodelabs.lms.entities.Session;
 import com.vpcodelabs.lms.security.UserPrincipal;
 
@@ -28,6 +29,8 @@ public interface SessionService {
     Session markePaymentCompleted(Long sessionId);
 
     Session addMeetingLink(Long sessionId, String meetingLink);
-    
+
+    Session submitSessionReview(Long id, UserPrincipal userPrincipal, SessionReviewDTO reviewDTO);
+
     void deleteSession(Long id);
 }

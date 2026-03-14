@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vpcodelabs.lms.dtos.SessionDTO;
 import com.vpcodelabs.lms.dtos.SessionResponseDTO;
+import com.vpcodelabs.lms.dtos.SessionReviewDTO;
 import com.vpcodelabs.lms.entities.Session;
 import com.vpcodelabs.lms.security.UserPrincipal;
 import com.vpcodelabs.lms.services.SessionService;
@@ -112,13 +113,24 @@ public class SessionController extends AbstractController{
         return sendOkResponse(convertToSessionResponseDTO(session));
     }
 
+    @PatchMapping("{id}/review")
+    @PreAuthorize("hasAnyRole('" + ROLE_STUDENT + "')")
+    public ResponseEntity<SessionResponseDTO> submitReview(
+            @PathVariable Long id,
+            @Valid @RequestBody SessionReviewDTO reviewDTO,
+            Authentication authentication) {
+
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        Session session = sessionService.submitSessionReview(id, userPrincipal, reviewDTO);
+
+        return sendOkResponse(convertToSessionResponseDTO(session));
+    }
+
     @DeleteMapping("{id}")
     public ResponseEntity<Session> deleteSession(@PathVariable Long id) {
         sessionService.deleteSession(id);
         return sendNoContentResponse();
     }
-
-    
 
     private SessionResponseDTO convertToSessionResponseDTO(Session session) {
         SessionResponseDTO sessionResponseDTO = SessionResponseDTO.builder()
