@@ -57,7 +57,9 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                     new UsernamePasswordAuthenticationToken(userPrincipal, null, authorities);
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            log.debug("Authentication set for user: {} with roles: {}", email, authorities);
+            log.error("Authentication set for user: {} with roles: {}", email, authorities);
+            log.error("Roles from token: {}", roles);
+            log.error("Authorities: {}", authorities.stream().map(GrantedAuthority::getAuthority).toList());
         }
         filterChain.doFilter(request, response);
     }
